@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Terms of Service - Stellar MD Editor</title>
+  <style>
+    body { max-width: 720px; margin: 0 auto; padding: 40px 24px; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.6; color: #1f2328; background: #fff; }
+    @media (prefers-color-scheme: dark) { body { color: #e6edf3; background: #0d1117; } }
+    h1 { font-size: 26px; } h2 { font-size: 19px; margin-top: 28px; }
+    p, li { margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Terms of Service</h1>
+  <p><em>Last updated: July 6, 2026</em></p>
+
+  <h2>1. The service</h2>
+  <p>Stellar MD Editor is a free browser-based editor for plain-text and Markdown files stored
+  in Google Drive, published by VedAIspace (<a href="https://vedaispace.com">vedaispace.com</a>).
+  By using it you agree to these terms.</p>
+
+  <h2>2. Your files</h2>
+  <p>Your files remain yours and remain in your Google Drive. The app edits only files you
+  explicitly open with it or create through it, and stores nothing on its own servers
+  (it has none).</p>
+
+  <h2>3. Dependence on Google Drive</h2>
+  <p>The app requires Google Drive and the Google Drive API to function. Availability of
+  those services is governed by Google, not by us.</p>
+
+  <h2>4. No warranty</h2>
+  <p>The app is provided "as is", without warranty of any kind. While it is built to save
+  your work reliably, you are responsible for keeping backups of important documents. To the
+  maximum extent permitted by law, we are not liable for any loss of data or other damages
+  arising from use of the app.</p>
+
+  <h2>5. Acceptable use</h2>
+  <p>Don't use the app to violate any law or Google's terms of service.</p>
+
+  <h2>6. Changes</h2>
+  <p>These terms may be updated; the current version is always available at this URL.
+  Continued use after changes constitutes acceptance.</p>
+
+  <h2>Contact</h2>
+  <p>Questions: <span id="contact-email">info (at) vedaispace (dot) com</span></p>
+  <script>
+    (function () {
+      var addr = ['info', 'vedaispace', 'com'][0] + '@' + 'vedaispace' + '.' + 'com';
+      var link = document.createElement('a');
+      link.href = 'mailto:' + addr;
+      link.textContent = addr;
+      document.getElementById('contact-email').replaceWith(link);
+    })();
+  </script>
+</body>
+</html>

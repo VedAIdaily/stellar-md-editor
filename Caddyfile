@@ -1,0 +1,14 @@
+# Railway injects PORT; 8080 is the local-docker default.
+:{$PORT:8080}
+
+root * /srv
+encode gzip
+file_server
+
+header {
+	X-Content-Type-Options nosniff
+	X-Frame-Options DENY
+	Referrer-Policy strict-origin-when-cross-origin
+	# Tiny site: always revalidate so deploys show up immediately.
+	Cache-Control "no-cache"
+}

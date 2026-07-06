@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A refreshingly simple editor for .txt and .md files in Google Drive.">
+  <title>Stellar MD Editor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header id="topbar" hidden>
+    <input id="filename" type="text" spellcheck="false" autocomplete="off" aria-label="File name">
+    <span id="dirty" class="dot" hidden title="Unsaved changes">&#9679;</span>
+    <span id="status" role="status"></span>
+    <span id="readonly" class="badge" hidden>Read-only</span>
+    <button id="save" type="button">Save</button>
+  </header>
+
+  <main>
+    <section id="landing" class="panel" hidden>
+      <h1>Stellar MD Editor</h1>
+      <p>A refreshingly simple editor for <code>.txt</code> and <code>.md</code> files in Google Drive.</p>
+      <p class="muted">In Google Drive, right-click a file &rarr; <strong>Open with</strong> &rarr; <strong>Stellar MD Editor</strong>.</p>
+      <button id="new-file" type="button">New file in My Drive</button>
+      <p class="muted">Free forever &middot; by <a class="brand" href="https://vedaispace.com" target="_blank" rel="noopener">VedAIspace</a></p>
+      <p class="muted"><a class="brand" href="privacy.html">Privacy</a> &middot; <a class="brand" href="terms.html">Terms</a></p>
+    </section>
+
+    <section id="gate" class="panel" hidden>
+      <h1>Stellar MD Editor</h1>
+      <p id="gate-msg"></p>
+      <button id="gate-btn" type="button"></button>
+    </section>
+
+    <textarea id="editor" hidden spellcheck="true" autocomplete="off" autocapitalize="off"
+              placeholder="Start typing&hellip;" aria-label="File content"></textarea>
+  </main>
+
+  <footer id="statusbar" hidden>
+    <a class="brand" href="https://vedaispace.com" target="_blank" rel="noopener">vedaispace.com</a>
+    <span id="counts"></span>
+  </footer>
+
+  <script>function __onGis(){window.__gisReady=true;if(window.__gisLoaded)window.__gisLoaded();}</script>
+  <script src="app.js" defer></script>
+  <script src="https://accounts.google.com/gsi/client" onload="__onGis()" async defer></script>
+
+</body>
+</html>
