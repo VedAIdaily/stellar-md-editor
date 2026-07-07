@@ -155,12 +155,6 @@ main {
   font-size: 12px;
 }
 
-.sb-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
 #hints-btn {
   width: 18px;
   height: 18px;
@@ -177,7 +171,7 @@ main {
 
 #hints {
   position: fixed;
-  left: 12px;
+  right: 12px;
   bottom: 34px;
   max-width: 340px;
   padding: 12px 14px;
