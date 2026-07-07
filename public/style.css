@@ -115,10 +115,19 @@ main {
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  max-width: 440px;
+  max-width: 480px;
   padding: 32px;
   text-align: center;
 }
+
+.points {
+  text-align: left;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+  padding-left: 20px;
+}
+.points li { margin-top: 6px; }
 .panel h1 { font-size: 22px; }
 .panel .muted { color: var(--muted); font-size: 14px; }
 .panel code {
