@@ -91,7 +91,10 @@ function syncTitle() {
 function updateCounts() {
   const text = ui.editor.value;
   const words = (text.match(/\S+/g) || []).length;
-  ui.counts.textContent = `${words.toLocaleString()} words · ${text.length.toLocaleString()} chars`;
+  // Rough LLM-token estimate: average of a char-based and a word-based heuristic.
+  const tokens = Math.round(0.5 * (text.length / 4) + 0.5 * (words * 1.33));
+  ui.counts.textContent =
+    `${words.toLocaleString()} words · ${text.length.toLocaleString()} chars · ~${tokens.toLocaleString()} tokens`;
 }
 
 /* ── Auth (Google Identity Services token flow) ─────────────────────── */
@@ -253,14 +256,32 @@ ui.editor.addEventListener('input', () => {
   updateCounts();
 });
 
-// Tab inserts two spaces (execCommand keeps the undo stack; setRangeText is the fallback).
+// Editor keys: Tab inserts two spaces; when text is selected, * _ ` ~ wrap the
+// selection instead of replacing it (press * twice for **bold**). The selection
+// is preserved so markers can be stacked. execCommand keeps the undo stack;
+// setRangeText is the fallback.
+const WRAP_KEYS = new Set(['*', '_', '`', '~']);
+
+function insertText(text) {
+  if (!document.execCommand('insertText', false, text)) {
+    ui.editor.setRangeText(text, ui.editor.selectionStart, ui.editor.selectionEnd, 'end');
+    ui.editor.dispatchEvent(new Event('input'));
+  }
+}
+
 ui.editor.addEventListener('keydown', (e) => {
-  if (e.key === 'Tab' && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) {
+  if (e.ctrlKey || e.altKey || e.metaKey || ui.editor.readOnly) return;
+  if (e.key === 'Tab' && !e.shiftKey) {
     e.preventDefault();
-    if (!document.execCommand('insertText', false, '  ')) {
-      ui.editor.setRangeText('  ', ui.editor.selectionStart, ui.editor.selectionEnd, 'end');
-      ui.editor.dispatchEvent(new Event('input'));
-    }
+    insertText('  ');
+    return;
+  }
+  const start = ui.editor.selectionStart;
+  const end = ui.editor.selectionEnd;
+  if (end > start && WRAP_KEYS.has(e.key)) {
+    e.preventDefault();
+    insertText(e.key + ui.editor.value.slice(start, end) + e.key);
+    ui.editor.setSelectionRange(start + 1, end + 1);
   }
 });
 

@@ -25,8 +25,10 @@ Open with → Stellar MD Editor
 - **Tiny**: vanilla HTML/CSS/JS, no framework, no build step, < 20 KB.
 
 Features: edit, Save / `Ctrl+S`, rename (click the filename), unsaved-changes indicator and
-close warning, word/char count, dark mode, read-only detection, "New file" from Drive's
-New menu, shared-drive support.
+close warning, word/char count with an approximate LLM-token estimate, markdown
+wrap-on-selection (select text and press `*`, `_`, `` ` `` or `~`; press `*` twice for
+bold), dark mode, read-only detection, "New file" from Drive's New menu, shared-drive
+support.
 
 ## Repository layout
 
@@ -153,3 +155,7 @@ card banner, at least one 1280×800 screenshot), support links (`APP_URL`, priva
 > Stellar MD Editor asks for a single permission: access to the individual files you open
 > with it. It cannot read your Drive, your email, or anything else. It has no servers:
 > your text never leaves your browser except to save back to your own Google Drive.
+
+## License
+
+The source code is public for transparency, and Stellar MD Editor is free for users. It is licensed under the [PolyForm Shield License 1.0.0](LICENSE). Republishing or providing competing versions of the app is not permitted.
