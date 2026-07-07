@@ -302,13 +302,7 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-ui.hintsBtn.addEventListener('click', (e) => {
-  e.stopPropagation();
-  toggleHints();
-});
-document.addEventListener('click', (e) => {
-  if (!ui.hints.hidden && !ui.hints.contains(e.target)) toggleHints(false);
-});
+ui.hintsBtn.addEventListener('click', () => toggleHints());
 
 ui.save.addEventListener('click', saveFile);
 ui.filename.addEventListener('change', renameFile);
