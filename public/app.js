@@ -100,7 +100,8 @@ function updateCounts() {
   const text = ui.editor.value;
   const words = (text.match(/\S+/g) || []).length;
   // Rough LLM-token estimate: average of a char-based and a word-based heuristic.
-  const tokens = Math.round(0.5 * (text.length / 4) + 0.5 * (words * 1.33));
+  // Rounded up: a partial token still costs a full token.
+  const tokens = Math.ceil(0.5 * (text.length / 4) + 0.5 * (words / 0.75));
   ui.counts.textContent =
     `${words.toLocaleString()} words · ${text.length.toLocaleString()} chars · ~${tokens.toLocaleString()} tokens`;
 }
