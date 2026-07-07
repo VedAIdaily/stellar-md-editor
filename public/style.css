@@ -155,6 +155,55 @@ main {
   font-size: 12px;
 }
 
+.sb-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#hints-btn {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+}
+#hints-btn:hover { color: var(--accent); border-color: var(--accent); filter: none; }
+
+#hints {
+  position: fixed;
+  left: 12px;
+  bottom: 34px;
+  max-width: 340px;
+  padding: 12px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  font-size: 12.5px;
+  color: var(--fg);
+}
+#hints table { border-collapse: collapse; }
+#hints td { padding: 2px 0; }
+#hints td:first-child { padding-right: 14px; }
+#hints code {
+  font-family: var(--editor-font);
+  font-size: 11.5px;
+  background: color-mix(in srgb, var(--border) 40%, transparent);
+  padding: 0 4px;
+  border-radius: 4px;
+}
+.hints-tip {
+  margin-top: 8px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
 .brand {
   color: var(--muted);
   text-decoration: none;

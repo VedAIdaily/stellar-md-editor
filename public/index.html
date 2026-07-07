@@ -48,9 +48,29 @@
   </main>
 
   <footer id="statusbar" hidden>
-    <a class="brand" href="https://vedaispace.com" target="_blank" rel="noopener">vedaispace.com</a>
+    <span class="sb-left">
+      <a class="brand" href="https://vedaispace.com" target="_blank" rel="noopener">vedaispace.com</a>
+      <button id="hints-btn" type="button" title="Markdown cheatsheet" aria-expanded="false">?</button>
+    </span>
     <span id="counts"></span>
   </footer>
+
+  <div id="hints" hidden role="dialog" aria-label="Markdown cheatsheet">
+    <table>
+      <tr><td><code># Title</code></td><td>heading (<code>##</code> smaller)</td></tr>
+      <tr><td><code>**bold**</code></td><td><strong>bold</strong></td></tr>
+      <tr><td><code>*italic*</code></td><td><em>italic</em></td></tr>
+      <tr><td><code>`code`</code></td><td><code>code</code></td></tr>
+      <tr><td><code>~~strike~~</code></td><td><s>strike</s></td></tr>
+      <tr><td><code>- item</code></td><td>bulleted list</td></tr>
+      <tr><td><code>1. item</code></td><td>numbered list</td></tr>
+      <tr><td><code>&gt; quote</code></td><td>quote block</td></tr>
+      <tr><td><code>[name](url)</code></td><td>link</td></tr>
+      <tr><td><code>---</code></td><td>divider line</td></tr>
+    </table>
+    <p class="hints-tip">Tips: select text and press <code>*</code> <code>_</code> <code>`</code> or <code>~</code>
+    to wrap it (twice for bold). Ctrl+S saves. Click the file name to rename.</p>
+  </div>
 
   <script>function __onGis(){window.__gisReady=true;if(window.__gisLoaded)window.__gisLoaded();}</script>
   <script src="app.js" defer></script>

@@ -41,6 +41,7 @@ const ui = {
   landing: $('landing'), gate: $('gate'),
   gateMsg: $('gate-msg'), gateBtn: $('gate-btn'),
   newFile: $('new-file'), counts: $('counts'),
+  hints: $('hints'), hintsBtn: $('hints-btn'),
 };
 
 const gisReady = new Promise((resolve) => {
@@ -56,6 +57,13 @@ function show(view) {
   ui.editor.hidden = view !== 'editor';
   ui.topbar.hidden = view !== 'editor';
   ui.statusbar.hidden = view !== 'editor';
+  toggleHints(false);
+}
+
+function toggleHints(force) {
+  const open = force !== undefined ? force : ui.hints.hidden;
+  ui.hints.hidden = !open;
+  ui.hintsBtn.setAttribute('aria-expanded', String(open));
 }
 
 function gate(message, btnLabel, onClick) {
@@ -289,7 +297,17 @@ document.addEventListener('keydown', (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
     e.preventDefault();
     saveFile();
+  } else if (e.key === 'Escape' && !ui.hints.hidden) {
+    toggleHints(false);
   }
+});
+
+ui.hintsBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  toggleHints();
+});
+document.addEventListener('click', (e) => {
+  if (!ui.hints.hidden && !ui.hints.contains(e.target)) toggleHints(false);
 });
 
 ui.save.addEventListener('click', saveFile);

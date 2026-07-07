@@ -27,8 +27,8 @@ Open with → Stellar MD Editor
 Features: edit, Save / `Ctrl+S`, rename (click the filename), unsaved-changes indicator and
 close warning, word/char count with an approximate LLM-token estimate, markdown
 wrap-on-selection (select text and press `*`, `_`, `` ` `` or `~`; press `*` twice for
-bold), dark mode, read-only detection, "New file" from Drive's New menu, shared-drive
-support.
+bold), a markdown cheatsheet behind the "?" button in the statusbar, dark mode, read-only
+detection, "New file" from Drive's New menu, shared-drive support.
 
 ## Repository layout
 
