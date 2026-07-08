@@ -42,6 +42,7 @@ const ui = {
   gateMsg: $('gate-msg'), gateBtn: $('gate-btn'),
   newFile: $('new-file'), counts: $('counts'),
   hints: $('hints'), hintsBtn: $('hints-btn'),
+  install: $('install'), installMsg: $('install-msg'),
 };
 
 const gisReady = new Promise((resolve) => {
@@ -257,6 +258,37 @@ async function renameFile() {
   }
 }
 
+/* ── Install (landing page) ─────────────────────────────────────────── */
+
+// Registers the app in Drive's right-click "Open with" menu by requesting the
+// drive.install grant. drive.file is bundled so opening a file afterward needs
+// no second consent. This is the only place drive.install is requested; the
+// editor runtime stays drive.file-only (SCOPE), so the minimal-permissions
+// promise for editing is unchanged.
+function showInstallMsg(msg) {
+  ui.installMsg.textContent = msg;
+  ui.installMsg.hidden = false;
+}
+
+async function install() {
+  if (demoMode) return;
+  await gisReady;
+  ui.install.disabled = true;
+  ui.installMsg.hidden = true;
+  const done = (msg) => { ui.install.disabled = false; showInstallMsg(msg); };
+  const installClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: 'https://www.googleapis.com/auth/drive.install ' + SCOPE,
+    login_hint: loginHint,
+    callback: (resp) => {
+      if (resp.error) { done('Install did not complete. Try again, or open a file from Drive.'); return; }
+      done('Added. In Google Drive, right-click a .txt or .md file, choose Open with, then Stellar MD Editor.');
+    },
+  });
+  installClient.error_callback = () => done('Install did not complete. Try again, or open a file from Drive.');
+  installClient.requestAccessToken();
+}
+
 /* ── Events ─────────────────────────────────────────────────────────── */
 
 ui.editor.addEventListener('input', () => {
@@ -314,6 +346,7 @@ ui.newFile.addEventListener('click', () => {
   if (demoMode) return;
   authThen(() => createFile(null));
 });
+ui.install.addEventListener('click', install);
 
 window.addEventListener('beforeunload', (e) => {
   if (dirty) { e.preventDefault(); e.returnValue = ''; }
