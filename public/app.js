@@ -127,7 +127,7 @@ function requestToken() {
       resolve();
     };
     tokenClient.error_callback = (err) => reject(new Error((err && err.type) || 'auth_failed'));
-    tokenClient.requestAccessToken();
+    tokenClient.requestAccessToken({ prompt: '' });
   });
 }
 
