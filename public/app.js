@@ -265,8 +265,9 @@ async function renameFile() {
 // no second consent. This is the only place drive.install is requested; the
 // editor runtime stays drive.file-only (SCOPE), so the minimal-permissions
 // promise for editing is unchanged.
-function showInstallMsg(msg) {
+function showInstallMsg(msg, ok) {
   ui.installMsg.textContent = msg;
+  ui.installMsg.classList.toggle('ok', ok === true);
   ui.installMsg.hidden = false;
 }
 
@@ -274,18 +275,23 @@ async function install() {
   if (demoMode) return;
   await gisReady;
   ui.install.disabled = true;
-  ui.installMsg.hidden = true;
-  const done = (msg) => { ui.install.disabled = false; showInstallMsg(msg); };
+  showInstallMsg('Waiting for Google…');
+  const fail = () => {
+    ui.install.disabled = false;
+    showInstallMsg('That did not complete. Try again, or open a file from Drive.');
+  };
   const installClient = google.accounts.oauth2.initTokenClient({
     client_id: CLIENT_ID,
     scope: 'https://www.googleapis.com/auth/drive.install ' + SCOPE,
     login_hint: loginHint,
     callback: (resp) => {
-      if (resp.error) { done('Install did not complete. Try again, or open a file from Drive.'); return; }
-      done('Added. In Google Drive, right-click a .txt or .md file, choose Open with, then Stellar MD Editor.');
+      if (resp.error) { fail(); return; }
+      ui.install.disabled = false;
+      ui.install.textContent = 'Added to Google Drive';
+      showInstallMsg('Done. In Google Drive, right-click a .txt or .md file, choose Open with, then Stellar MD Editor.', true);
     },
   });
-  installClient.error_callback = () => done('Install did not complete. Try again, or open a file from Drive.');
+  installClient.error_callback = fail;
   installClient.requestAccessToken();
 }
 

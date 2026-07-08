@@ -140,6 +140,7 @@ main {
 .points li { margin-top: 6px; }
 .panel h1 { font-size: 22px; }
 .panel .muted { color: var(--muted); font-size: 14px; }
+#install-msg.ok { color: var(--accent); font-weight: 600; }
 .panel code {
   font-family: var(--editor-font);
   font-size: 0.9em;
