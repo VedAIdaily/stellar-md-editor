@@ -10,5 +10,8 @@ header {
 	X-Frame-Options DENY
 	Referrer-Policy strict-origin-when-cross-origin
 	# Tiny site: always revalidate so deploys show up immediately.
+	# NOTE: Cloudflare proxying overrides this with its Browser Cache TTL (4 h
+	# by default); the zone needs a Cache Rule / Browser TTL "Respect origin"
+	# for md.vedaispace.com, or deploys reach browsers up to 4 h late.
 	Cache-Control "no-cache"
 }
