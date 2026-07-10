@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Support - Stellar MD Editor</title>
+  <style>
+    body { max-width: 720px; margin: 0 auto; padding: 40px 24px; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.6; color: #1f2328; background: #fff; }
+    @media (prefers-color-scheme: dark) { body { color: #e6edf3; background: #0d1117; } }
+    h1 { font-size: 26px; } h2 { font-size: 19px; margin-top: 28px; }
+    p, li { margin-top: 10px; }
+    .tm { font-size: 13px; opacity: 0.75; margin-top: 28px; }
+  </style>
+</head>
+<body>
+  <h1>Support</h1>
+
+  <p>Stellar MD Editor is a free, refreshingly simple editor for plain-text and Markdown
+  files stored in Google Drive&trade;, published by VedAIspace
+  (<a href="https://vedaispace.com">vedaispace.com</a>). This page answers common questions
+  and tells you how to reach us.</p>
+
+  <h2>Contact</h2>
+  <p>For help, questions, or feedback, email <span id="contact-email">info (at) vedaispace (dot) com</span>.
+  We read everything and usually reply within a few days.</p>
+
+  <h2>How do I open a file?</h2>
+  <p>In Google Drive, right-click a <code>.txt</code> or <code>.md</code> file, choose
+  "Open with", then "Stellar MD Editor". The app can only access files you open with it
+  or create through it.</p>
+
+  <h2>Can I open files with a double-click, without the right-click menu?</h2>
+  <p>Yes, with a one-time Drive setting: in Google Drive, click the gear icon, then
+  "Settings", then "Manage apps", find Stellar MD Editor, and tick "Use by default".
+  From then on, double-clicking a <code>.txt</code> or <code>.md</code> file opens it in
+  the editor directly.</p>
+
+  <h2>Where do my changes go?</h2>
+  <p>Click Save or press Ctrl+S (Cmd+S on Mac). The status bar shows "Saved to Drive",
+  and your changes are written back to the same file in your Google Drive. The app stores
+  nothing anywhere else; open the file again at any time to continue where you left off.</p>
+
+  <h2>I typed **bold** but the text does not look bold</h2>
+  <p>That is by design. Stellar MD Editor is a plain-text editor: it shows and saves the
+  Markdown source exactly as written, with no formatted preview. The formatting appears
+  wherever the file is viewed or published (websites, wikis, and apps that render Markdown).</p>
+
+  <h2>How do I create a new file?</h2>
+  <p>In Google Drive, click "New", then "More", then "Stellar MD Editor"; an
+  <code>Untitled.md</code> file is created in the current folder. You can also use the
+  "New file in My Drive" button on the <a href="/">app's home page</a>.</p>
+
+  <h2>How do I rename a file?</h2>
+  <p>Click the file name at the top of the editor, type the new name, and press Enter.</p>
+
+  <h2>Which permissions does the app use?</h2>
+  <p>Per-file access only (the <code>drive.file</code> scope): the app can see just the
+  files you open with it or create through it, never the rest of your Drive. Details are
+  in the <a href="privacy.html">Privacy Policy</a>.</p>
+
+  <p><a href="/">Open Stellar MD Editor</a> &middot; <a href="privacy.html">Privacy Policy</a> &middot; <a href="terms.html">Terms of Service</a></p>
+
+  <p class="tm">Google Drive&trade; is a trademark of Google LLC.</p>
+
+  <script>
+    (function () {
+      var addr = ['info', 'vedaispace', 'com'][0] + '@' + 'vedaispace' + '.' + 'com';
+      var link = document.createElement('a');
+      link.href = 'mailto:' + addr;
+      link.textContent = addr;
+      document.getElementById('contact-email').replaceWith(link);
+    })();
+  </script>
+</body>
+</html>

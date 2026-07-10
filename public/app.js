@@ -75,16 +75,9 @@ function gate(message, btnLabel, onClick) {
   ui.gateBtn.focus();
 }
 
-let statusTimer;
 function setStatus(msg, isError = false) {
-  clearTimeout(statusTimer);
   ui.status.textContent = msg;
   ui.status.classList.toggle('error', isError);
-  if (msg === 'Saved') {
-    statusTimer = setTimeout(() => {
-      if (ui.status.textContent === 'Saved') ui.status.textContent = '';
-    }, 2500);
-  }
 }
 
 function setDirty(v) {
@@ -119,12 +112,41 @@ async function initAuth() {
   });
 }
 
+// Tokens can't be refreshed silently in a pure browser app, and every file
+// opens in a fresh tab, so without a cache each open costs a GIS popup.
+// Caching the token for its ~1 h lifetime makes repeat opens silent. The hint
+// check stops a token from one signed-in Google account from being reused
+// when Drive launches the app for a different one.
+const TOKEN_KEY = 'token';
+
+function cacheToken(token, expiresIn) {
+  accessToken = token;
+  tokenExpiresAt = Date.now() + (Number(expiresIn) - 60) * 1000;
+  try {
+    localStorage.setItem(TOKEN_KEY, JSON.stringify({ t: token, exp: tokenExpiresAt, hint: loginHint || '' }));
+  } catch (_) { /* storage unavailable; the in-memory token still works */ }
+}
+
+function clearToken() {
+  accessToken = null;
+  try { localStorage.removeItem(TOKEN_KEY); } catch (_) { /* ignore */ }
+}
+
+function loadCachedToken() {
+  try {
+    const c = JSON.parse(localStorage.getItem(TOKEN_KEY));
+    if (c && c.t && Date.now() < c.exp && (!loginHint || c.hint === loginHint)) {
+      accessToken = c.t;
+      tokenExpiresAt = c.exp;
+    }
+  } catch (_) { /* corrupt entry or storage unavailable */ }
+}
+
 function requestToken() {
   return new Promise((resolve, reject) => {
     tokenClient.callback = (resp) => {
       if (resp.error) { reject(new Error(resp.error)); return; }
-      accessToken = resp.access_token;
-      tokenExpiresAt = Date.now() + (Number(resp.expires_in) - 60) * 1000;
+      cacheToken(resp.access_token, resp.expires_in);
       resolve();
     };
     tokenClient.error_callback = (err) => reject(new Error((err && err.type) || 'auth_failed'));
@@ -146,7 +168,7 @@ async function driveFetch(url, opts = {}, retried = false) {
     headers: { Authorization: `Bearer ${accessToken}`, ...(opts.headers || {}) },
   });
   if (res.status === 401 && !retried) {
-    accessToken = null; // token expired or revoked; re-auth once and retry
+    clearToken(); // token expired or revoked; re-auth once and retry
     return driveFetch(url, opts, true);
   }
   if (!res.ok) {
@@ -209,7 +231,7 @@ async function saveFile() {
   if (!file || !file.canEdit || saving) return;
   if (demoMode) {
     setDirty(false);
-    setStatus('Saved');
+    setStatus('Saved to Drive');
     return;
   }
   saving = true;
@@ -224,7 +246,7 @@ async function saveFile() {
     });
     // Keep the dirty flag if the user typed while the save was in flight.
     if (ui.editor.value === contentAtSave) setDirty(false);
-    setStatus('Saved');
+    setStatus('Saved to Drive');
   } catch (err) {
     setStatus('Save failed: ' + err.message, true);
   } finally {
@@ -286,6 +308,7 @@ async function install() {
     login_hint: loginHint,
     callback: (resp) => {
       if (resp.error) { fail(); return; }
+      cacheToken(resp.access_token, resp.expires_in);
       ui.install.disabled = false;
       ui.install.textContent = 'Added to Google Drive';
       showInstallMsg('Done. In Google Drive, right-click a .txt or .md file, choose Open with, then Stellar MD Editor.', true);
@@ -299,7 +322,7 @@ async function install() {
 
 ui.editor.addEventListener('input', () => {
   if (!dirty) setDirty(true);
-  if (ui.status.textContent === 'Saved') setStatus('');
+  if (ui.status.textContent === 'Saved to Drive') setStatus('');
   updateCounts();
 });
 
@@ -416,6 +439,7 @@ async function boot() {
 
   const state = parseState();
   loginHint = (state && state.userId) || undefined;
+  loadCachedToken();
   await initAuth();
 
   if (!state || (state.action === 'open' && !(state.ids && state.ids.length))) {
