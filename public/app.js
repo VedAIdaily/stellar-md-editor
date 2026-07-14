@@ -48,6 +48,7 @@ const ui = {
   hints: $('hints'), hintsBtn: $('hints-btn'),
   install: $('install'), installMsg: $('install-msg'),
   openDrive: $('open-drive'), open: $('open'),
+  confirmOpen: $('confirm-open'), confirmKeep: $('confirm-keep'), confirmDiscard: $('confirm-discard'),
 };
 
 const gisReady = new Promise((resolve) => {
@@ -447,13 +448,27 @@ ui.openDrive.addEventListener('click', () => {
   ui.openDrive.disabled = true;
   authThen(openFromDrive);
 });
+function startOpenFromDrive() {
+  ui.open.disabled = true; // same double-tap guard as the landing button
+  authThen(openFromDrive);
+}
+
 ui.open.addEventListener('click', () => {
   if (demoMode) return;
   // Opening another file replaces the editor content in place, so beforeunload
-  // never fires; this confirm is the only unsaved-changes safety net here.
-  if (dirty && !confirm('You have unsaved changes that will be lost. Open another file?')) return;
-  ui.open.disabled = true; // same double-tap guard as the landing button
-  authThen(openFromDrive);
+  // never fires; this prompt is the only unsaved-changes safety net here. An
+  // in-app <dialog> instead of confirm(): browsers title confirm() with the
+  // page origin ("md.vedaispace.com says"), which pages cannot change.
+  if (dirty) {
+    if (ui.confirmOpen.showModal) { ui.confirmOpen.showModal(); return; }
+    if (!confirm('You have unsaved changes that will be lost. Open another file?')) return;
+  }
+  startOpenFromDrive();
+});
+ui.confirmKeep.addEventListener('click', () => ui.confirmOpen.close());
+ui.confirmDiscard.addEventListener('click', () => {
+  ui.confirmOpen.close();
+  startOpenFromDrive(); // this click is itself the user gesture GIS may need
 });
 ui.install.addEventListener('click', install);
 

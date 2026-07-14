@@ -14,9 +14,9 @@
     <input id="filename" type="text" spellcheck="false" autocomplete="off" aria-label="File name">
     <span id="dirty" class="dot" hidden title="Unsaved changes">&#9679;</span>
     <span id="readonly" class="badge" hidden>Read-only</span>
-    <button id="open" type="button" class="secondary" title="Open another file from Drive">Open</button>
     <span id="status" role="status"></span>
     <button id="save" type="button">Save</button>
+    <button id="open" type="button" class="secondary" title="Open another file from Drive">Open</button>
   </header>
 
   <main>
@@ -82,6 +82,14 @@
     <p class="hints-tip">The editor shows and saves the Markdown source as plain text; the
     formatting appears wherever the file is viewed or published.</p>
   </div>
+
+  <dialog id="confirm-open" aria-label="Unsaved changes">
+    <p>You have unsaved changes that will be lost.</p>
+    <div class="dialog-actions">
+      <button id="confirm-keep" type="button">Keep editing</button>
+      <button id="confirm-discard" type="button" class="secondary">Open anyway</button>
+    </div>
+  </dialog>
 
   <script>function __onGis(){window.__gisReady=true;if(window.__gisLoaded)window.__gisLoaded();}</script>
   <script src="app.js" defer></script>

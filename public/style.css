@@ -217,6 +217,27 @@ main {
 }
 .brand:hover { color: var(--accent); text-decoration: underline; }
 
+/* ── Confirm dialog (leaving unsaved changes via Open) ── */
+
+#confirm-open {
+  margin: auto;
+  max-width: 320px;
+  padding: 20px;
+  background: var(--bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  font-size: 14px;
+}
+#confirm-open::backdrop { background: rgba(0, 0, 0, 0.35); }
+.dialog-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
 /* ── Mobile ── */
 
 /* Track the real viewport as mobile URL bars collapse and expand. */
