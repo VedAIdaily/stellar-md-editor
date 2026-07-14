@@ -392,10 +392,13 @@ ui.editor.addEventListener('input', () => {
   updateCounts();
 });
 
-// Editor keys: Tab inserts two spaces; when text is selected, * _ ` ~ wrap the
-// selection instead of replacing it (press * twice for **bold**). The selection
-// is preserved so markers can be stacked. execCommand keeps the undo stack;
-// setRangeText is the fallback.
+// Editor keys: Tab (keydown) inserts two spaces; typing * _ ` ~ with text
+// selected wraps the selection instead of replacing it (press * twice for
+// **bold**). The selection is preserved so markers can be stacked. Wrapping
+// hooks beforeinput, not keydown: soft keyboards report keydown as
+// "Unidentified" (keyCode 229) and only expose the typed character in
+// beforeinput's data, so a keydown version silently breaks on phones.
+// execCommand keeps the undo stack; setRangeText is the fallback.
 const WRAP_KEYS = new Set(['*', '_', '`', '~']);
 
 function insertText(text) {
@@ -410,15 +413,19 @@ ui.editor.addEventListener('keydown', (e) => {
   if (e.key === 'Tab' && !e.shiftKey) {
     e.preventDefault();
     insertText('  ');
-    return;
   }
+});
+
+ui.editor.addEventListener('beforeinput', (e) => {
+  // insertText() below re-triggers this handler with the whole wrapped string
+  // as data; it is never a single wrap character, so there is no recursion.
+  if (e.inputType !== 'insertText' || !WRAP_KEYS.has(e.data)) return;
   const start = ui.editor.selectionStart;
   const end = ui.editor.selectionEnd;
-  if (end > start && WRAP_KEYS.has(e.key)) {
-    e.preventDefault();
-    insertText(e.key + ui.editor.value.slice(start, end) + e.key);
-    ui.editor.setSelectionRange(start + 1, end + 1);
-  }
+  if (end <= start) return;
+  e.preventDefault();
+  insertText(e.data + ui.editor.value.slice(start, end) + e.data);
+  ui.editor.setSelectionRange(start + 1, end + 1);
 });
 
 document.addEventListener('keydown', (e) => {
