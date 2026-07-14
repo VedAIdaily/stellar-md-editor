@@ -66,10 +66,20 @@ function show(view) {
   toggleHints(false);
 }
 
+const viewportMeta = document.querySelector('meta[name="viewport"]');
+
 function toggleHints(force) {
   const open = force !== undefined ? force : ui.hints.hidden;
   ui.hints.hidden = !open;
   ui.hintsBtn.setAttribute('aria-expanded', String(open));
+  // While the cheatsheet is open, let the soft keyboard overlay the page
+  // (resizes-visual, the pre-2026-07-14 behavior) instead of squashing the
+  // layout, where the popover would cover the entire shrunken editor. Only
+  // Android Chrome honors interactive-widget; the flip applies from the next
+  // keyboard open, which suffices because tapping "?" blurs the editor and
+  // closes the keyboard first.
+  viewportMeta.content = 'width=device-width, initial-scale=1, interactive-widget='
+    + (open ? 'resizes-visual' : 'resizes-content');
 }
 
 function gate(message, btnLabel, onClick) {
