@@ -24,7 +24,8 @@ Open with → Stellar MD Editor
 - **No tracking**: no analytics, no cookies, no accounts.
 - **Tiny**: vanilla HTML/CSS/JS, no framework, no build step, < 20 KB.
 
-Features: edit, Save / `Ctrl+S`, rename (click the filename), unsaved-changes indicator and
+Features: edit, Save / `Ctrl+S`, rename (click the filename), an Open button to switch
+to another Drive file from inside the editor, unsaved-changes indicator and
 close warning, word/char count with an approximate LLM-token estimate, markdown
 wrap-on-selection (select text and press `*`, `_`, `` ` `` or `~`; press `*` twice for
 bold), a markdown cheatsheet behind the "?" button in the statusbar, dark mode, read-only

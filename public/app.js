@@ -47,7 +47,7 @@ const ui = {
   newFile: $('new-file'), counts: $('counts'),
   hints: $('hints'), hintsBtn: $('hints-btn'),
   install: $('install'), installMsg: $('install-msg'),
-  openDrive: $('open-drive'),
+  openDrive: $('open-drive'), open: $('open'),
 };
 
 const gisReady = new Promise((resolve) => {
@@ -366,8 +366,10 @@ async function openFromDrive() {
       .setVisible(true);
   } finally {
     // Safe to re-enable here: the picker is up (its modal backdrop blocks
-    // re-clicks) or the load failed and the gate view replaced the landing.
+    // re-clicks) or the load failed and the gate view took over. Both trigger
+    // buttons are cleared; only one of them is visible in any view.
     ui.openDrive.disabled = false;
+    ui.open.disabled = false;
   }
 }
 
@@ -435,6 +437,14 @@ ui.openDrive.addEventListener('click', () => {
   ui.openDrive.disabled = true;
   authThen(openFromDrive);
 });
+ui.open.addEventListener('click', () => {
+  if (demoMode) return;
+  // Opening another file replaces the editor content in place, so beforeunload
+  // never fires; this confirm is the only unsaved-changes safety net here.
+  if (dirty && !confirm('You have unsaved changes that will be lost. Open another file?')) return;
+  ui.open.disabled = true; // same double-tap guard as the landing button
+  authThen(openFromDrive);
+});
 ui.install.addEventListener('click', install);
 
 window.addEventListener('beforeunload', (e) => {
@@ -496,9 +506,10 @@ async function boot() {
     gate('Setup required: set CLIENT_ID in app.js (see README.md).', 'Reload', () => location.reload());
     return;
   }
-  // Demo mode returns before this, so the button stays visible for screenshots;
-  // a deploy without the key hides it cleanly.
+  // Demo mode returns before this, so the buttons stay visible for screenshots;
+  // a deploy without the key hides them cleanly.
   ui.openDrive.hidden = PICKER_API_KEY.startsWith('REPLACE');
+  ui.open.hidden = ui.openDrive.hidden;
 
   const state = parseState();
   loginHint = (state && state.userId) || undefined;
