@@ -30,7 +30,8 @@ wrap-on-selection (select text and press `*`, `_`, `` ` `` or `~`; press `*` twi
 bold), a markdown cheatsheet behind the "?" button in the statusbar, dark mode, read-only
 detection, "New file" from Drive's New menu, shared-drive support. Sign-in is remembered
 for about an hour (token cached in the browser), so opening several files in a row does
-not re-prompt.
+not re-prompt. Works on phones too: open the app in a mobile browser and pick your file
+with the "Open a file from Drive" button.
 
 ## Repository layout
 
@@ -62,8 +63,10 @@ Marketplace screenshots are taken.
 
 **Real Drive testing:** OAuth only works from whitelisted origins, so add your local origin
 (e.g. `http://localhost:3000`) to the authorized JavaScript origins of a Google OAuth
-client you control, and put its ID in `CLIENT_ID` in `app.js`. To simulate Drive opening
-a file, visit:
+client you control, and put its ID in `CLIENT_ID` in `app.js`. The "Open a file from
+Drive" button uses the Google Picker and additionally needs an API key in `PICKER_API_KEY` in
+`app.js`; the key's HTTP referrer list must include `http://localhost:3000` for local
+dev. To simulate Drive opening a file, visit:
 
 ```
 http://localhost:3000/?state={"ids":["<A_REAL_FILE_ID>"],"action":"open"}

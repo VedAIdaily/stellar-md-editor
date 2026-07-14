@@ -3,6 +3,10 @@
 /* ── Config ─────────────────────────────────────────────────────────── */
 
 const CLIENT_ID = '203279034010-8d4n6ucitm5tf1fn5emfv5brsuag252l.apps.googleusercontent.com';
+// Google Picker developer key: referrer-restricted, public by design, not a secret.
+const PICKER_API_KEY = 'AIzaSyAjlpTcXji81kXVK7o_muylpDGRFm-Vxb8';
+// GCP project number; the picker requires it for drive.file per-file grants.
+const APP_ID = CLIENT_ID.split('-')[0];
 const SCOPE = 'https://www.googleapis.com/auth/drive.file';
 const API = 'https://www.googleapis.com/drive/v3';
 const UPLOAD = 'https://www.googleapis.com/upload/drive/v3';
@@ -43,6 +47,7 @@ const ui = {
   newFile: $('new-file'), counts: $('counts'),
   hints: $('hints'), hintsBtn: $('hints-btn'),
   install: $('install'), installMsg: $('install-msg'),
+  openDrive: $('open-drive'),
 };
 
 const gisReady = new Promise((resolve) => {
@@ -318,6 +323,54 @@ async function install() {
   installClient.requestAccessToken();
 }
 
+/* ── Open from Drive (picker) ───────────────────────────────────────── */
+
+let pickerReady = null;
+
+function loadPickerApi() {
+  if (!pickerReady) {
+    pickerReady = new Promise((resolve, reject) => {
+      const fail = () => { pickerReady = null; reject(new Error('Could not load the file picker.')); };
+      const s = document.createElement('script');
+      s.src = 'https://apis.google.com/js/api.js';
+      s.async = true;
+      s.onload = () => gapi.load('picker', { callback: resolve, onerror: fail });
+      s.onerror = fail;
+      document.head.appendChild(s);
+    });
+  }
+  return pickerReady;
+}
+
+async function openFromDrive() {
+  try {
+    await loadPickerApi();
+    const view = new google.picker.DocsView(google.picker.ViewId.DOCS)
+      .setMimeTypes('text/plain,text/markdown,text/x-markdown')
+      .setMode(google.picker.DocsViewMode.LIST);
+    new google.picker.PickerBuilder()
+      .setAppId(APP_ID)
+      .setDeveloperKey(PICKER_API_KEY)
+      .setOAuthToken(accessToken)
+      .addView(view)
+      .enableFeature(google.picker.Feature.NAV_HIDDEN)
+      .enableFeature(google.picker.Feature.SUPPORT_DRIVES)
+      .setCallback((data) => {
+        if (data.action !== google.picker.Action.PICKED) return;
+        const id = data.docs[0].id;
+        const state = encodeURIComponent(JSON.stringify({ ids: [id], action: 'open' }));
+        history.replaceState(null, '', `?state=${state}`);
+        runSafely(() => openFile(id));
+      })
+      .build()
+      .setVisible(true);
+  } finally {
+    // Safe to re-enable here: the picker is up (its modal backdrop blocks
+    // re-clicks) or the load failed and the gate view replaced the landing.
+    ui.openDrive.disabled = false;
+  }
+}
+
 /* ── Events ─────────────────────────────────────────────────────────── */
 
 ui.editor.addEventListener('input', () => {
@@ -374,6 +427,13 @@ ui.filename.addEventListener('keydown', (e) => {
 ui.newFile.addEventListener('click', () => {
   if (demoMode) return;
   authThen(() => createFile(null));
+});
+ui.openDrive.addEventListener('click', () => {
+  if (demoMode) return;
+  // Disabled from click until the picker shows: a double-tap would otherwise
+  // stack two pickers, or clobber the pending token request's callback.
+  ui.openDrive.disabled = true;
+  authThen(openFromDrive);
 });
 ui.install.addEventListener('click', install);
 
@@ -436,6 +496,9 @@ async function boot() {
     gate('Setup required: set CLIENT_ID in app.js (see README.md).', 'Reload', () => location.reload());
     return;
   }
+  // Demo mode returns before this, so the button stays visible for screenshots;
+  // a deploy without the key hides it cleanly.
+  ui.openDrive.hidden = PICKER_API_KEY.startsWith('REPLACE');
 
   const state = parseState();
   loginHint = (state && state.userId) || undefined;

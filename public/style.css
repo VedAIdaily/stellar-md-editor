@@ -216,3 +216,20 @@ main {
   text-decoration: none;
 }
 .brand:hover { color: var(--accent); text-decoration: underline; }
+
+/* ── Mobile ── */
+
+/* Track the real viewport as mobile URL bars collapse and expand. */
+@supports (height: 100dvh) {
+  body { height: 100dvh; }
+}
+
+@media (max-width: 640px) {
+  /* 16px stops iOS Safari from zooming the page when the editor gets focus. */
+  #editor { font-size: 16px; padding: 16px; }
+  .panel { padding: 24px 20px; }
+}
+
+@media (pointer: coarse) {
+  #hints-btn { width: 24px; height: 24px; font-size: 12px; }
+}
