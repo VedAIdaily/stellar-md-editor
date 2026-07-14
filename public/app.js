@@ -247,7 +247,7 @@ async function saveFile() {
   if (!file || !file.canEdit || saving) return;
   if (demoMode) {
     setDirty(false);
-    setStatus('Saved to Drive');
+    setStatus('Saved to Drive™');
     return;
   }
   saving = true;
@@ -262,7 +262,7 @@ async function saveFile() {
     });
     // Keep the dirty flag if the user typed while the save was in flight.
     if (ui.editor.value === contentAtSave) setDirty(false);
-    setStatus('Saved to Drive');
+    setStatus('Saved to Drive™');
   } catch (err) {
     setStatus('Save failed: ' + err.message, true);
   } finally {
@@ -316,7 +316,7 @@ async function install() {
   showInstallMsg('Waiting for Google…');
   const fail = () => {
     ui.install.disabled = false;
-    showInstallMsg('That did not complete. Try again, or open a file from Drive.');
+    showInstallMsg('That did not complete. Try again, or open a file from Drive™.');
   };
   const installClient = google.accounts.oauth2.initTokenClient({
     client_id: CLIENT_ID,
@@ -326,8 +326,8 @@ async function install() {
       if (resp.error) { fail(); return; }
       cacheToken(resp.access_token, resp.expires_in);
       ui.install.disabled = false;
-      ui.install.textContent = 'Added to Google Drive';
-      showInstallMsg('Done. In Google Drive, right-click a .txt or .md file, choose Open with, then Stellar MD Editor.', true);
+      ui.install.textContent = 'Added to Google Drive™';
+      showInstallMsg('Done. In Google Drive™, right-click a .txt or .md file, choose Open with, then Stellar MD Editor.', true);
     },
   });
   installClient.error_callback = fail;
@@ -388,7 +388,7 @@ async function openFromDrive() {
 
 ui.editor.addEventListener('input', () => {
   if (!dirty) setDirty(true);
-  if (ui.status.textContent === 'Saved to Drive') setStatus('');
+  if (ui.status.textContent === 'Saved to Drive™') setStatus('');
   updateCounts();
 });
 
