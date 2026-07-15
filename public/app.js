@@ -11,6 +11,9 @@ const SCOPE = 'https://www.googleapis.com/auth/drive.file';
 const API = 'https://www.googleapis.com/drive/v3';
 const UPLOAD = 'https://www.googleapis.com/upload/drive/v3';
 const MAX_FILE_BYTES = 10 * 1024 * 1024;
+// Save confirmation; support.html and the listing text quote it verbatim and
+// must stay identical to it.
+const SAVED_MSG = 'Saved to Drive';
 
 // Sample document for ?demo=editor (UI preview and Marketplace screenshots).
 const DEMO_TEXT = `# My article
@@ -190,7 +193,7 @@ async function driveFetch(url, opts = {}, retried = false) {
   if (!res.ok) {
     let detail = '';
     try { detail = (await res.json()).error.message; } catch (_) { /* non-JSON error body */ }
-    throw new Error(detail || `Drive API error ${res.status}`);
+    throw new Error(detail || `Drive™ API error ${res.status}`);
   }
   return res;
 }
@@ -247,7 +250,7 @@ async function saveFile() {
   if (!file || !file.canEdit || saving) return;
   if (demoMode) {
     setDirty(false);
-    setStatus('Saved to Drive™');
+    setStatus(SAVED_MSG);
     return;
   }
   saving = true;
@@ -262,7 +265,7 @@ async function saveFile() {
     });
     // Keep the dirty flag if the user typed while the save was in flight.
     if (ui.editor.value === contentAtSave) setDirty(false);
-    setStatus('Saved to Drive™');
+    setStatus(SAVED_MSG);
   } catch (err) {
     setStatus('Save failed: ' + err.message, true);
   } finally {
@@ -388,7 +391,7 @@ async function openFromDrive() {
 
 ui.editor.addEventListener('input', () => {
   if (!dirty) setDirty(true);
-  if (ui.status.textContent === 'Saved to Drive™') setStatus('');
+  if (ui.status.textContent === SAVED_MSG) setStatus('');
   updateCounts();
 });
 
