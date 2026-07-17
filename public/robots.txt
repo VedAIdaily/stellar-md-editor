@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://md.vedaispace.com/sitemap.xml
