@@ -217,6 +217,16 @@ main {
 }
 .brand:hover { color: var(--accent); text-decoration: underline; }
 
+.legal-links {
+  font-size: 16px;
+  font-weight: 600;
+}
+.legal-links a { color: var(--fg); text-decoration: none; }
+.legal-links a:hover { color: var(--accent); text-decoration: underline; }
+
+.faq-link { color: var(--accent); text-decoration: underline; }
+.faq-link:hover { text-decoration: none; }
+
 /* ── Confirm dialog (leaving unsaved changes via Open) ── */
 
 #confirm-open {
