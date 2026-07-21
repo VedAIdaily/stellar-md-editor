@@ -264,3 +264,14 @@ main {
 @media (pointer: coarse) {
   #hints-btn { width: 24px; height: 24px; font-size: 12px; }
 }
+
+/* ── Desktop ── */
+
+/* Landing's bullet points use &nbsp; to keep phrases like "Open with" and
+   "Stellar MD Editor" from breaking mid-phrase; at the shared .panel width
+   that pushes whole phrases onto their own short line instead. Widen just
+   the landing panel where there's room, leaving mobile (and the shorter
+   gate panel) at the original width. */
+@media (min-width: 641px) {
+  #landing.panel { max-width: 680px; }
+}
