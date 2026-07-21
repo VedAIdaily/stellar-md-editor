@@ -262,7 +262,7 @@ async function saveFile() {
   try {
     await driveFetch(`${UPLOAD}/files/${file.id}?uploadType=media&supportsAllDrives=true`, {
       method: 'PATCH',
-      headers: { 'Content-Type': file.mimeType },
+      headers: { 'Content-Type': file.mimeType + '; charset=UTF-8' },
       body: contentAtSave,
     });
     // Keep the dirty flag if the user typed while the save was in flight.
