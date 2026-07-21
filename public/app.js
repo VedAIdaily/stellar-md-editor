@@ -163,13 +163,15 @@ function loadCachedToken() {
 
 function requestToken() {
   return new Promise((resolve, reject) => {
+    const nonce = crypto.randomUUID();
     tokenClient.callback = (resp) => {
       if (resp.error) { reject(new Error(resp.error)); return; }
+      if (resp.state !== nonce) { reject(new Error('state_mismatch')); return; }
       cacheToken(resp.access_token, resp.expires_in);
       resolve();
     };
     tokenClient.error_callback = (err) => reject(new Error((err && err.type) || 'auth_failed'));
-    tokenClient.requestAccessToken({ prompt: '' });
+    tokenClient.requestAccessToken({ prompt: '', state: nonce });
   });
 }
 
@@ -321,12 +323,13 @@ async function install() {
     ui.install.disabled = false;
     showInstallMsg('That did not complete. Try again, or open a file from Drive™.');
   };
+  const nonce = crypto.randomUUID();
   const installClient = google.accounts.oauth2.initTokenClient({
     client_id: CLIENT_ID,
     scope: 'https://www.googleapis.com/auth/drive.install ' + SCOPE,
     login_hint: loginHint,
     callback: (resp) => {
-      if (resp.error) { fail(); return; }
+      if (resp.error || resp.state !== nonce) { fail(); return; }
       cacheToken(resp.access_token, resp.expires_in);
       ui.install.disabled = false;
       ui.install.textContent = 'Added to Google Drive™';
@@ -334,7 +337,7 @@ async function install() {
     },
   });
   installClient.error_callback = fail;
-  installClient.requestAccessToken();
+  installClient.requestAccessToken({ state: nonce });
 }
 
 /* ── Open from Drive (picker) ───────────────────────────────────────── */
