@@ -563,15 +563,14 @@ async function boot() {
     ? () => createFile(state.folderId)
     : () => openFile(state.ids[0]);
 
-  try {
-    // Works when the browser allows the token popup on load; otherwise fall
-    // back to an explicit user gesture so popup blockers don't strand us.
-    await ensureToken();
-  } catch (_) {
+  // Cold start with no usable cached token: go straight to the gate. Never
+  // try the token popup without a user gesture; browsers block it and show
+  // a "Pop-ups blocked" warning that looks broken (owner call 2026-07-22).
+  if (accessToken && Date.now() < tokenExpiresAt) {
+    runSafely(run);
+  } else {
     gate('Stellar MD Editor needs your permission to access this file.', 'Continue with Google', () => authThen(run));
-    return;
   }
-  runSafely(run);
 }
 
 boot();
